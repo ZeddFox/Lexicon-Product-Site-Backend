@@ -1,9 +1,12 @@
-﻿namespace Lexicon_Product_Site_Backend
+﻿using System.Collections.Generic;
+
+namespace Lexicon_Product_Site_Backend
 {
-    public class UserDB : DbContext
+    public class ProductSiteDB : DbContext
     {
-        public UserDB(DbContextOptions<UserDB> options) : base(options) { }
+        public ProductSiteDB() { }
 
         public DbSet<Models.User> Users { get; set; }
+        public DbSet<Models.Product> Products { get; set; }
     }
 }

@@ -58,6 +58,15 @@ namespace Lexicon_Product_Site_Backend.Controllers
                     return Results.NotFound();
                 }
             }
+
+            if (user != null)
+            {
+                return Results.Ok(user);
+            }
+            else
+            {
+                return Results.NotFound();
+            }
         }
 
         [Route("create")]

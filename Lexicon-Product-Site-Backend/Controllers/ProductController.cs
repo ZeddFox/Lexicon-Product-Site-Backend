@@ -1,4 +1,5 @@
 ﻿using Lexicon_Product_Site_Backend.Models;
+using Lexicon_Product_Site_Backend.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lexicon_Product_Site_Backend.Controllers
@@ -59,21 +60,13 @@ namespace Lexicon_Product_Site_Backend.Controllers
                     return Results.NotFound();
                 }
             }
-
-            if (product != null)
-            {
-                return Results.Ok(product);
-            }
-            else
-            {
-                return Results.NotFound();
-            }
         }
 
         [Route("create")]
         [HttpPost]
-        public IResult Create(Product product)
+        public IResult Create(NewProduct newProduct)
         {
+            Product product = new Product();
             #region Get Highest ID
             // Get highest current ID from database
             var products = _productDB.Products.ToList();
@@ -89,12 +82,23 @@ namespace Lexicon_Product_Site_Backend.Controllers
 
             currentID++;
 
+            newProduct.ProductID = currentID;
+            #endregion
+
+            #region Set product variables
             product.ProductID = currentID;
+            product.Name = newProduct.Name;
+            product.Price = newProduct.Price;
+            product.Amount = newProduct.Amount;
+            product.Category = newProduct.Category;
+            product.Description = newProduct.Description;
+            // product.Images = newProduct.Images;                              Find out how this works
+            product.Enabled = newProduct.Enabled;
             #endregion
 
             try
             {
-                _productDB.Products.Add(product);
+                _productDB.Products.Add(newProduct);
                 _productDB.SaveChanges();
 
                 return Results.Ok(new

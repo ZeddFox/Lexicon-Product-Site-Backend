@@ -13,7 +13,8 @@ namespace Lexicon_Product_Site_Backend.Controllers
         [HttpGet]
         public IResult Index()
         {
-            return Results.Ok({
+            return Results.Ok(new
+            {
                 products = _productDB.Products.ToList()
             });
         }

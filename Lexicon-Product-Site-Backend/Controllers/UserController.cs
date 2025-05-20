@@ -1,4 +1,5 @@
 ﻿using Lexicon_Product_Site_Backend.Models;
+using Lexicon_Product_Site_Backend.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lexicon_Product_Site_Backend.Controllers
@@ -9,48 +10,35 @@ namespace Lexicon_Product_Site_Backend.Controllers
     {
         private readonly UserDB _userDB = userDB;
 
-        [Route("all")]
+        [Route("login")]
         [HttpGet]
-        public IResult Index()
+        public IResult Login(LoginRequest loginRequest)
         {
-            return Results.Ok({
-                users = _userDB.Users.ToList()
-            });
-        }
-        [Route("read")]
-        [HttpGet]
-        public IResult Read(User user)
-        {
-            // Find user by ID
-            // If null, try to find using Email
-            if (user.UserID == null)
-             {
-                // Find user by Email
-                // If null, return HTTP 404 Not Found
-                if (user.Email == null)
-                {
-                    return Results.NotFound();
-                }
-                // If Email is not null, try to get user by Email
-                else
-                {
-                    try
-                    {
-                        //user = _userDB.Users.FirstOrDefault();
-                    }
-                    // If not found, return HTTP 404 Not Found
-                    catch
-                    {
-                        return Results.NotFound();
-                    }
-                }
+            // Find user by Email
+            // If null, return HTTP 404 Not Found
+            if (loginRequest.Email == null)
+            {
+                return Results.NotFound();
             }
-            // If ID is not null, try to get user by ID
+            // If Email is not null, try to get user by Email
             else
             {
                 try
                 {
-                    //user = _userDB.Users.FirstOrDefault();
+                    // Find user in database
+                    //User user = _userDB.Users.FirstOrDefault();
+
+                    if (loginRequest.Password == user.password)
+                    {
+                        return Results.Ok(user);
+                    }
+                    else
+                    {
+                        return Results.Conflict(new
+                        {
+                            message = "Password was incorrect"
+                        });
+                    }
                 }
                 // If not found, return HTTP 404 Not Found
                 catch
@@ -58,52 +46,64 @@ namespace Lexicon_Product_Site_Backend.Controllers
                     return Results.NotFound();
                 }
             }
-
-            if (user != null)
-            {
-                return Results.Ok(user);
-            }
-            else
-            {
-                return Results.NotFound();
-            }
         }
 
-        [Route("create")]
+        [Route("register")]
         [HttpPost]
-        public IResult Create(User user)
+        public IResult Register(NewUser newUser)
         {
-            #region Get Highest ID
-            // Get highest current ID from database
-            var users = _userDB.Users.ToList();
-            int currentID = 0;
+            User user = new User();
+            // Check if user with that email already exists
+            user = _userDB.Find(user.Email == newUser.Email);
 
-            foreach (var item in users)
+            // If user doesn't exist, continue registering
+            if (user == null)
             {
-                if (currentID < item.UserID)
+                #region Get Highest ID
+                // Get highest current ID from database
+                var users = _userDB.Users.ToList();
+                int currentID = 0;
+
+                foreach (var item in users)
                 {
-                    currentID = item.UserID;
+                    if (currentID < item.UserID)
+                    {
+                        currentID = item.UserID;
+                    }
+                }
+                currentID++;
+                #endregion
+
+                #region Set user variables
+                user.UserID = currentID;
+                user.Email = newUser.Email;
+                user.FirstName = newUser.FirstName;
+                user.LastName = newUser.LastName;
+                user.Password = newUser.Password;
+                #endregion
+
+                try
+                {
+                    _userDB.Users.Add(user);
+                    _userDB.SaveChanges();
+
+                    return Results.Ok(new
+                    {
+                        status = "User added successfully."
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return Results.Conflict(ex.ToString());
                 }
             }
-
-            currentID++;
-
-            user.UserID = currentID;
-            #endregion
-
-            try
+            // If user with same email already exist, return a HTTP Confict with message.
+            else
             {
-                _userDB.Users.Add(user);
-                _userDB.SaveChanges();
-
-                return Results.Ok(new
+                return Results.Conflict(new
                 {
-                    status = "Message sent successfully."
+                    message = "User with that email already exists."
                 });
-            }
-            catch (Exception ex)
-            {
-                return Results.Conflict(ex.ToString());
             }
         }
     }

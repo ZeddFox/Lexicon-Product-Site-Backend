@@ -1,0 +1,14 @@
+﻿using Lexicon_Product_Site_Backend.Models;
+
+namespace Lexicon_Product_Site_Backend.Requests
+{
+    public class NewProduct
+    {
+        public string? Name { get; set; }
+        public decimal Price { get; set; } = 999999m;
+        public string? Category { get; set; }
+        public string? Description { get; set; }
+        public List<NewProductImage>? Images { get; set; }
+        public bool Enabled { get; set; } = false;
+    }
+}

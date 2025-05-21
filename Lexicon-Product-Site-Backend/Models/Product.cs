@@ -11,7 +11,7 @@ namespace Lexicon_Product_Site_Backend.Models
         public int Amount { get; set; } = 0;
         public string? Category { get; set; }
         public string? Description { get; set; }
-        public List<ProductImage>? Images { get; set; }
+        public List<ProductImage> Images { get; set; } = new List<ProductImage>();
         public bool Enabled { get; set; } = false;
     }
 }

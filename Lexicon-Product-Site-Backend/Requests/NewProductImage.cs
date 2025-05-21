@@ -4,7 +4,7 @@ namespace Lexicon_Product_Site_Backend.Requests
 {
     public class NewProductImage
     {
-        public string Extension { get; set; }
-        public string AltDescription { get; set; }
+        public int ProductID { get; set; }
+        public string AltDescription { get; set; } = "image";
     }
 }

@@ -28,7 +28,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                     // Find user in database
                     User user = _pSiteDB.Users.FirstOrDefault();
 
-                    if (loginRequest.Password == user.password)
+                    if (loginRequest.Password == user.Password)
                     {
                         return Results.Ok(user);
                     }
@@ -54,7 +54,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
         {
             User user = new User();
             // Check if user with that email already exists
-            user = _pSiteDB.Find(user.Email == newUser.Email);
+            user = _pSiteDB.Users.FirstOrDefault(newUser.Email);
 
             // If user doesn't exist, continue registering
             if (user == null)

@@ -26,7 +26,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 }
 
                 // Check if connected product exists
-                Product? product = _pSiteDB.Products.FirstOrDefault(newProductImage.ProductID);
+                Product? product = _pSiteDB.Products.Find(newProductImage.ProductID);
                 if (product == null)
                 {
                     return Results.BadRequest("Product to upload images to was not found");

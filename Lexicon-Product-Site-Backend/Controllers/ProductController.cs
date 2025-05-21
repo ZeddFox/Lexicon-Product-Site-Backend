@@ -10,6 +10,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
     {
         private readonly PSiteDB _pSiteDB = pSiteDB;
 
+        #region All
         [Route("all")]
         [HttpGet]
         public IResult Index()
@@ -19,6 +20,9 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 products = _pSiteDB.Products.ToList()
             });
         }
+        #endregion
+
+        #region Read
         [Route("read")]
         [HttpGet]
         public IResult Read(GetProduct getProduct)
@@ -38,7 +42,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 {
                     try
                     {
-                        Product product = _pSiteDB.Products.FirstOrDefault();
+                        Product product = _pSiteDB.Products.Find(getProduct.Name);
                         return Results.Ok(product);
                     }
                     // If not found, return HTTP 404 Not Found
@@ -53,7 +57,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
             {
                 try
                 {
-                    Product product = _pSiteDB.Products.FirstOrDefault();
+                    Product product = _pSiteDB.Products.Find(getProduct.ProductID);
                     return Results.Ok(product);
                 }
                 // If not found, return HTTP 404 Not Found
@@ -63,7 +67,9 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 }
             }
         }
+        #endregion
 
+        #region Create
         [Route("create")]
         [HttpPost]
         public IResult Create(NewProduct newProduct)
@@ -97,7 +103,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
 
             try
             {
-                _pSiteDB.Products.Add(newProduct);
+                _pSiteDB.Products.Add(product);
                 _pSiteDB.SaveChanges();
 
                 return Results.Ok(new
@@ -110,5 +116,6 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 return Results.Conflict(ex.ToString());
             }
         }
+        #endregion
     }
 }

@@ -9,14 +9,14 @@ namespace Lexicon_Product_Site_Backend.Controllers
     public class ProductImageController
     {
         [ApiController]
-        [Route("[i]")]
+        [Route("i")]
         public class ProductController(PSiteDB pSiteDB) : Controller
         {
             private readonly PSiteDB _pSiteDB = pSiteDB;
             private readonly IWebHostEnvironment _env;
 
             [HttpPost]
-            [Route("[upload]")]
+            [Route("/upload")]
             public async Task<IResult> UploadImage(NewProductImage newProductImage, IFormFile file)
             {
                 // Check if image file exists

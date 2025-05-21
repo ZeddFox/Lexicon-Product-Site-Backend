@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lexicon_Product_Site_Backend.Controllers
 {
     [ApiController]
-    [Route("[user]")]
+    [Route("user")]
     public class UserController(PSiteDB pSiteDB) : Controller
     {
         private readonly PSiteDB _pSiteDB = pSiteDB;
 
-        [Route("login")]
-        [HttpGet]
+        [Route("/login")]
+        [HttpPost]
         public IResult Login(LoginRequest loginRequest)
         {
             // Find user by Email
@@ -26,7 +26,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 try
                 {
                     // Find user in database
-                    User user = _pSiteDB.Users.Find(loginRequest.Email);
+                    User user = _pSiteDB.Users.Where(item => item.Email == loginRequest.Email).Single();
 
                     if (loginRequest.Password == user.Password)
                     {
@@ -48,16 +48,23 @@ namespace Lexicon_Product_Site_Backend.Controllers
             }
         }
 
-        [Route("register")]
+        [Route("/register")]
         [HttpPost]
         public IResult Register(RegisterRequest newUser)
         {
-            User user = new User();
-            // Check if user with that email already exists
-            user = _pSiteDB.Users.Find(newUser.Email);
+            User foundUser = null;
+            try
+            {
+                // Check if user with that email already exists
+                foundUser = _pSiteDB.Users.Where(item => item.Email == newUser.Email).Single();
 
-            // If user doesn't exist, continue registering
-            if (user == null)
+                // If user with same email already exist, return a HTTP Confict with message.
+                return Results.Conflict(new
+                {
+                    message = "User with that email already exists."
+                });
+            }
+            catch
             {
                 #region Get Highest ID
                 // Get highest current ID from database
@@ -75,6 +82,8 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 #endregion
 
                 #region Set user variables
+                User user = new User();
+
                 user.UserID = currentID;
                 user.Email = newUser.Email;
                 user.FirstName = newUser.FirstName;
@@ -96,14 +105,6 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 {
                     return Results.Conflict(ex.ToString());
                 }
-            }
-            // If user with same email already exist, return a HTTP Confict with message.
-            else
-            {
-                return Results.Conflict(new
-                {
-                    message = "User with that email already exists."
-                });
             }
         }
     }

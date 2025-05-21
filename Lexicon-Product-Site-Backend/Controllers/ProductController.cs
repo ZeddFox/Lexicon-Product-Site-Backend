@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lexicon_Product_Site_Backend.Controllers
 {
     [ApiController]
-    [Route("[product]")]
+    [Route("product")]
     public class ProductController(PSiteDB pSiteDB) : Controller
     {
         private readonly PSiteDB _pSiteDB = pSiteDB;
 
         #region All
-        [Route("all")]
+        [Route("/all")]
         [HttpGet]
         public IResult Index()
         {
@@ -23,7 +23,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
         #endregion
 
         #region Read
-        [Route("read")]
+        [Route("/read")]
         [HttpGet]
         public IResult Read(GetProduct getProduct)
         {
@@ -42,7 +42,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 {
                     try
                     {
-                        Product product = _pSiteDB.Products.Find(getProduct.Name);
+                        Product product = _pSiteDB.Products.Where(item => item.Name == getProduct.Name).Single();
                         return Results.Ok(product);
                     }
                     // If not found, return HTTP 404 Not Found
@@ -70,7 +70,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
         #endregion
 
         #region Create
-        [Route("create")]
+        [Route("/create")]
         [HttpPost]
         public IResult Create(NewProduct newProduct)
         {

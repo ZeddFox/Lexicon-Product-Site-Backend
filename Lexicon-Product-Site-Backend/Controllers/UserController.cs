@@ -50,7 +50,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
 
         [Route("register")]
         [HttpPost]
-        public IResult Register(NewUser newUser)
+        public IResult Register(RegisterRequest newUser)
         {
             User user = new User();
             // Check if user with that email already exists

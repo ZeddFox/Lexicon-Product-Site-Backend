@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lexicon_Product_Site_Backend.Models
 {
@@ -11,6 +12,8 @@ namespace Lexicon_Product_Site_Backend.Models
         public int Amount { get; set; } = 0;
         public string? Category { get; set; }
         public string? Description { get; set; }
+        [ForeignKey(nameof(ImageIDs))]
+        public List<int> ImageIDs { get; set; }
         public List<ProductImage> Images { get; set; } = new List<ProductImage>();
         public bool Enabled { get; set; } = false;
     }

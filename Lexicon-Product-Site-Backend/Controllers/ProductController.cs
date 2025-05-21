@@ -25,47 +25,23 @@ namespace Lexicon_Product_Site_Backend.Controllers
         #region Read
         [Route("/read")]
         [HttpGet]
-        public IResult Read(GetProduct getProduct)
+        public IResult Read(int productID)
         {
-            // Find product by ID
-            // If null, try to find using Name
-            if (getProduct.ProductID == null)
+            if (productID != null)
             {
-                // Find product by Name
-                // If null, return HTTP 404 Not Found
-                if (getProduct.Name == null)
-                {
-                    return Results.NotFound();
-                }
-                // If Email is not null, try to get product by Name
-                else
-                {
-                    try
-                    {
-                        Product product = _pSiteDB.Products.Where(item => item.Name == getProduct.Name).Single();
-                        return Results.Ok(product);
-                    }
-                    // If not found, return HTTP 404 Not Found
-                    catch
-                    {
-                        return Results.NotFound();
-                    }
-                }
-            }
-            // If ID is not null, try to get product by ID
-            else
-            {
+                // Try finding product
                 try
                 {
-                    Product product = _pSiteDB.Products.Find(getProduct.ProductID);
+                    Product product = _pSiteDB.Products.Find(productID);
                     return Results.Ok(product);
                 }
                 // If not found, return HTTP 404 Not Found
-                catch
+                catch (Exception ex)
                 {
-                    return Results.NotFound();
+                    return Results.Conflict(ex);
                 }
             }
+            return Results.NotFound();
         }
         #endregion
 

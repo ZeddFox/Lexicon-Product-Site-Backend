@@ -6,9 +6,9 @@ namespace Lexicon_Product_Site_Backend.Controllers
 {
     [ApiController]
     [Route("[user]")]
-    public class UserController(UserDB userDB) : Controller
+    public class UserController(PSiteDB pSiteDB) : Controller
     {
-        private readonly UserDB _userDB = userDB;
+        private readonly PSiteDB _pSiteDB = pSiteDB;
 
         [Route("login")]
         [HttpGet]
@@ -26,7 +26,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 try
                 {
                     // Find user in database
-                    //User user = _userDB.Users.FirstOrDefault();
+                    User user = _pSiteDB.Users.FirstOrDefault();
 
                     if (loginRequest.Password == user.password)
                     {
@@ -54,14 +54,14 @@ namespace Lexicon_Product_Site_Backend.Controllers
         {
             User user = new User();
             // Check if user with that email already exists
-            user = _userDB.Find(user.Email == newUser.Email);
+            user = _pSiteDB.Find(user.Email == newUser.Email);
 
             // If user doesn't exist, continue registering
             if (user == null)
             {
                 #region Get Highest ID
                 // Get highest current ID from database
-                var users = _userDB.Users.ToList();
+                var users = _pSiteDB.Users.ToList();
                 int currentID = 0;
 
                 foreach (var item in users)
@@ -84,8 +84,8 @@ namespace Lexicon_Product_Site_Backend.Controllers
 
                 try
                 {
-                    _userDB.Users.Add(user);
-                    _userDB.SaveChanges();
+                    _pSiteDB.Users.Add(user);
+                    _pSiteDB.SaveChanges();
 
                     return Results.Ok(new
                     {
@@ -108,64 +108,3 @@ namespace Lexicon_Product_Site_Backend.Controllers
         }
     }
 }
-
-/*
-using lexicon_message_thread_backend.HttpModels;
-using Microsoft.AspNetCore.Mvc;
-
-namespace lexicon_message_thread_backend.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class MessageController(MessageDB messageDB) : Controller
-    {
-        private readonly MessageDB _messageDB = messageDB;
-
-        [Route("read")]
-        [HttpGet]
-        public IResult Index()
-        {
-            return Results.Ok(new
-            {
-                messages = _messageDB.Messages.ToList()
-            });
-        }
-
-        [Route("write")]
-        [HttpPost]
-        public IResult Write(Message message)
-        {
-            var messages = _messageDB.Messages.ToList();
-            int currentID = 0;
-
-            foreach (var item in messages)
-            {
-                if (currentID < item.MessageID)
-                {
-                    currentID = item.MessageID;
-                }
-            }
-
-            currentID++;
-
-            message.MessageID = currentID;
-            message.SendDate = DateTime.Now;
-
-            try
-            {
-                _messageDB.Messages.Add(message);
-                _messageDB.SaveChanges();
-
-                return Results.Ok(new
-                {
-                    status = "Message sent successfully."
-                });
-            }
-            catch (Exception ex)
-            {
-                return Results.Conflict(ex.ToString());
-            }
-        }
-    }
-}
-*/

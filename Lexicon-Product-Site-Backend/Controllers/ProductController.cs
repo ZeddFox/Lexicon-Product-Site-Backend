@@ -6,9 +6,9 @@ namespace Lexicon_Product_Site_Backend.Controllers
 {
     [ApiController]
     [Route("[product]")]
-    public class ProductController(ProductDB productDB) : Controller
+    public class ProductController(PSiteDB pSiteDB) : Controller
     {
-        private readonly ProductDB _productDB = productDB;
+        private readonly PSiteDB _pSiteDB = pSiteDB;
 
         [Route("all")]
         [HttpGet]
@@ -16,20 +16,20 @@ namespace Lexicon_Product_Site_Backend.Controllers
         {
             return Results.Ok(new
             {
-                products = _productDB.Products.ToList()
+                products = _pSiteDB.Products.ToList()
             });
         }
         [Route("read")]
         [HttpGet]
-        public IResult Read(Product product)
+        public IResult Read(GetProduct getProduct)
         {
             // Find product by ID
             // If null, try to find using Name
-            if (product.ProductID == null)
+            if (getProduct.ProductID == null)
             {
                 // Find product by Name
                 // If null, return HTTP 404 Not Found
-                if (product.Name == null)
+                if (getProduct.Name == null)
                 {
                     return Results.NotFound();
                 }
@@ -38,7 +38,8 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 {
                     try
                     {
-                        //product = _productDB.Products.FirstOrDefault();
+                        Product product = _pSiteDB.Products.FirstOrDefault();
+                        return Results.Ok(product);
                     }
                     // If not found, return HTTP 404 Not Found
                     catch
@@ -52,7 +53,8 @@ namespace Lexicon_Product_Site_Backend.Controllers
             {
                 try
                 {
-                    //product = _productDB.Products.FirstOrDefault();
+                    Product product = _pSiteDB.Products.FirstOrDefault();
+                    return Results.Ok(product);
                 }
                 // If not found, return HTTP 404 Not Found
                 catch
@@ -69,7 +71,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
             Product product = new Product();
             #region Get Highest ID
             // Get highest current ID from database
-            var products = _productDB.Products.ToList();
+            var products = _pSiteDB.Products.ToList();
             int currentID = 0;
 
             foreach (var item in products)
@@ -81,8 +83,6 @@ namespace Lexicon_Product_Site_Backend.Controllers
             }
 
             currentID++;
-
-            newProduct.ProductID = currentID;
             #endregion
 
             #region Set product variables
@@ -92,14 +92,13 @@ namespace Lexicon_Product_Site_Backend.Controllers
             product.Amount = newProduct.Amount;
             product.Category = newProduct.Category;
             product.Description = newProduct.Description;
-            // product.Images = newProduct.Images;                              Find out how this works
             product.Enabled = newProduct.Enabled;
             #endregion
 
             try
             {
-                _productDB.Products.Add(newProduct);
-                _productDB.SaveChanges();
+                _pSiteDB.Products.Add(newProduct);
+                _pSiteDB.SaveChanges();
 
                 return Results.Ok(new
                 {

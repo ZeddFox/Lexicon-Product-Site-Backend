@@ -2,9 +2,9 @@
 
 namespace Lexicon_Product_Site_Backend
 {
-    public class ProductSiteDB : DbContext
+    public class PSiteDB : DbContext
     {
-        public ProductSiteDB() { }
+        public PSiteDB() { }
 
         public DbSet<Models.User> Users { get; set; }
         public DbSet<Models.Product> Products { get; set; }

@@ -32,8 +32,16 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 // Try finding product
                 try
                 {
-                    Product product = _pSiteDB.Products.Find(productID);
-                    return Results.Ok(product);
+                    Product? product = _pSiteDB.Products.Find(productID);
+
+                    if (product != null)
+                    {
+                        return Results.Ok(product);
+                    }
+                    else
+                    {
+                        return Results.NotFound($"Product with ID:'{productID}' does not exist");
+                    }
                 }
                 // If not found, return HTTP 404 Not Found
                 catch (Exception ex)
@@ -84,7 +92,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
 
                 return Results.Ok(new
                 {
-                    status = "Message sent successfully."
+                    status = "Product added successfully"
                 });
             }
             catch (Exception ex)

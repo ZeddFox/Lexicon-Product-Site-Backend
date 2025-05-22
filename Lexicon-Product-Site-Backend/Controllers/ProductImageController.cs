@@ -61,7 +61,18 @@ namespace Lexicon_Product_Site_Backend.Controllers
             }
 
             string extension = Path.GetExtension(file.FileName);
-            string fileName = product.Name + "_img-" + stringID + extension;
+
+            string fileName;
+
+            if (newProductImage.IsThumbnail)
+            {
+                fileName = product.Name + "_thumbnail" + extension;
+            }
+            else
+            {
+                fileName = product.Name + "_img-" + stringID + extension;
+            }
+
             string filePath = Path.Combine(uploadFolder, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -80,22 +91,26 @@ namespace Lexicon_Product_Site_Backend.Controllers
             newImage.Name = fileName;
             newImage.Extension = extension;
             newImage.AltDescription = newProductImage.AltDescription;
+            newImage.IsThumbnail = newProductImage.IsThumbnail;
             #endregion
 
-            try
-            {
-                _pSiteDB.ProductImages.Add(newImage);
-                _pSiteDB.SaveChanges();
+            product.Images.Add(newImage);
+            product.ImageIDs.Add(newImage.ImageID);
 
-                return Results.Ok(new
+                try
                 {
-                    status = "Image added successfully."
-                });
-            }
-            catch (Exception ex)
-            {
-                return Results.Conflict(ex.ToString());
-            }
+                    _pSiteDB.ProductImages.Add(newImage);
+                    _pSiteDB.SaveChanges();
+
+                    return Results.Ok(new
+                    {
+                        status = "Image added successfully."
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return Results.Conflict(ex.ToString());
+                }
         }
     }
 }

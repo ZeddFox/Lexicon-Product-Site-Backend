@@ -14,5 +14,6 @@ namespace Lexicon_Product_Site_Backend.Models
         public string Name { get; set; }
         public string Extension { get; set; }
         public string AltDescription { get; set; }
+        public bool IsThumbnail { get; set; } = false;
     }
 }

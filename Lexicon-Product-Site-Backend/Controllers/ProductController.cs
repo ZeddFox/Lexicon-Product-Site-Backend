@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lexicon_Product_Site_Backend.Controllers
 {
     [ApiController]
-    [Route("product")]
+    [Route("/p")]
     public class ProductController(PSiteDB pSiteDB) : Controller
     {
         private readonly PSiteDB _pSiteDB = pSiteDB;
 
         #region All
-        [Route("/all")]
+        [Route("/p/all")]
         [HttpGet]
         public IResult Index()
         {
@@ -23,7 +23,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
         #endregion
 
         #region Read
-        [Route("/read")]
+        [Route("/p")]
         [HttpGet]
         public IResult Read(int productID)
         {
@@ -54,7 +54,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
         #endregion
 
         #region Create
-        [Route("/create")]
+        [Route("/c")]
         [HttpPost]
         public IResult Create(NewProduct newProduct)
         {

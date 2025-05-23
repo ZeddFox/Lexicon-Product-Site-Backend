@@ -5,15 +5,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+string frontendAddress = "localhost:5173";
+string backendAddress = "localhost:7123";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:5173",
-                              "https://localhost:5173",
-                              "http://localhost:7123",
-                              "https://localhost:7123")
+                          policy.WithOrigins("http://" + frontendAddress,
+                              "https://" + frontendAddress,
+                              "http://" + backendAddress,
+                              "https://" + backendAddress)
                               .AllowAnyHeader()
                               .AllowAnyMethod()
                               .AllowCredentials();

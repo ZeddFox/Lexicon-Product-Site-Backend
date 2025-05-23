@@ -1,6 +1,7 @@
 ﻿using Lexicon_Product_Site_Backend.Models;
 using Lexicon_Product_Site_Backend.Requests;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace Lexicon_Product_Site_Backend.Controllers
 {
@@ -105,6 +106,56 @@ namespace Lexicon_Product_Site_Backend.Controllers
                 {
                     return Results.Conflict(ex.ToString());
                 }
+            }
+        }
+
+        [Route("/giveadmin")]
+        [HttpPost]
+        public IResult GiveAdmin(AdminRequest adminRequest)
+        {
+            if (adminRequest.Password == "SuperSecretAdminPassword")
+            {
+                User toAdmin = _pSiteDB.Users.Find(adminRequest.UserID);
+                toAdmin.IsAdmin = "true";
+                _pSiteDB.SaveChanges();
+                return Results.Ok();
+            }
+            else
+            {
+                return Results.Forbid();
+            }
+        }
+        [Route("/removeadmin")]
+        [HttpPost]
+        public IResult RemoveAdmin(AdminRequest unadminRequest)
+        {
+            if (unadminRequest.Password == "SuperSecretAdminPassword")
+            {
+                User toNormal = _pSiteDB.Users.Find(unadminRequest.UserID);
+                toNormal.IsAdmin = "false";
+                _pSiteDB.SaveChanges();
+                return Results.Ok();
+            }
+            else
+            {
+                return Results.Forbid();
+            }
+        }
+
+        [Route("/getallusers")]
+        [HttpGet]
+        public IResult GetAllUsers(string password)
+        {
+            if (password == "SuperSecretAdminPassword")
+            {
+                return Results.Ok(new
+                {
+                    users = _pSiteDB.Users.ToList()
+                });
+            }
+            else
+            {
+                return Results.Forbid();
             }
         }
     }

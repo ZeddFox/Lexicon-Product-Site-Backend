@@ -11,14 +11,33 @@ namespace Lexicon_Product_Site_Backend.Controllers
         private readonly PSiteDB _pSiteDB = pSiteDB;
 
         #region All
+        // Get all product that are enabled
         [Route("/p/all")]
         [HttpGet]
         public IResult Index()
         {
             return Results.Ok(new
             {
-                products = _pSiteDB.Products.ToList()
+                products = _pSiteDB.Products.Where(product => product.Enabled)
             });
+        }
+
+        // Get ALL product even disabled
+        [Route("/p/all/admin")]
+        [HttpGet]
+        public IResult AdminIndex(string password)
+        {
+            if (password == "SuperSecretAdminPassword")
+            {
+                return Results.Ok(new
+                {
+                    products = _pSiteDB.Products.ToList()
+                });
+            }
+            else
+            {
+                return Results.Forbid();
+            }
         }
         #endregion
 

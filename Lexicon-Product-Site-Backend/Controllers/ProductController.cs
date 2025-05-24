@@ -82,7 +82,7 @@ namespace Lexicon_Product_Site_Backend.Controllers
             product.Amount = newProduct.Amount;
             product.Category = newProduct.Category;
             product.Description = newProduct.Description;
-            product.Enabled = newProduct.Enabled;
+            product.Enabled = false;
             #endregion
 
             try

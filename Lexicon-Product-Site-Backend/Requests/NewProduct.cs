@@ -9,6 +9,5 @@ namespace Lexicon_Product_Site_Backend.Requests
         public int Amount { get; set; } = 0;
         public string? Category { get; set; }
         public string? Description { get; set; }
-        public bool Enabled { get; set; } = false;
     }
 }
